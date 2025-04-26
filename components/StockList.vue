@@ -20,7 +20,7 @@
         <span class="loading loading-spinner loading-lg text-sky-600"></span>
       </div>
       
-      <div v-else-if="stocks.length === 0" class="text-center py-12 text-slate-500">
+      <div v-else-if="stockData.length === 0" class="text-center py-12 text-slate-500">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
@@ -40,9 +40,9 @@
               </tr>
             </thead>
             <tbody class="text-base">
-              <tr v-for="stock in paginatedStocks" :key="stock.code" class="hover:bg-slate-50 border-b border-slate-200">
-                <td class="font-bold py-6 text-indigo-600 text-xl">{{ stock.code }}</td>
-                <td class="font-medium text-slate-800 text-lg">{{ stock.name }}</td>        
+              <tr v-for="stock in paginatedStocks" :key="stock.companyCode" class="hover:bg-slate-50 border-b border-slate-200">
+                <td class="font-bold py-6 text-indigo-600 text-xl">{{ stock.companyCode }}</td>
+                <td class="font-medium text-slate-800 text-lg">{{ stock.companyName }}</td>        
                 <td>
                   <div class="overflow-x-auto">
                     <table class="w-full">
@@ -87,7 +87,7 @@
                 <td class="py-4">
                   <div class="flex flex-col items-center gap-3 px-4">
                     <button
-                      @click="$emit('analyze', stock)"
+                      @click="handleAnalyze(stock)"
                       class="btn w-48 text-base font-medium h-auto bg-slate-700 hover:bg-slate-800 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,7 +96,7 @@
                       分析報告
                     </button>
                     <button
-                      @click="$emit('info', stock)"
+                      @click="handleInfo(stock)"
                       class="btn w-48 text-base font-medium h-auto bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,7 +114,7 @@
         <!-- 分頁控制器 -->
         <div class="flex justify-between items-center px-2 mt-4">
           <div class="text-sm text-slate-600 font-medium">
-            顯示第 {{ startIndex + 1 }} 到 {{ Math.min(endIndex, stocks.length) }} 筆，共 {{ stocks.length }} 筆資料
+            顯示第 {{ startIndex + 1 }} 到 {{ Math.min(endIndex, stockData.length) }} 筆，共 {{ stockData.length }} 筆資料
           </div>
           <div class="join rounded-lg shadow-sm overflow-hidden">
             <button 
@@ -167,31 +167,52 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import type { Stock } from '@/types/stock';
+import type { Stock } from '~/types/stock';
+import { useMockStocks } from '~/composables/useMockStocks';
 
 const props = defineProps<{
   stocks: Stock[];
   loading: boolean;
 }>();
 
-defineEmits<{
+const { mockStocks, useMockData } = useMockStocks();
+
+const emit = defineEmits<{
   (e: 'analyze' | 'info', stock: Stock): void;
 }>();
+
+// 使用環境變數控制是否使用模擬資料
+const stockData = computed(() => {
+  const result = useMockData ? mockStocks : props.stocks;
+  console.log('Final stocks to display:', result);
+  return result;
+});
+
+// 處理按鈕點擊事件
+const handleAnalyze = (stock: Stock) => {
+  console.log('Analyzing stock:', stock);
+  emit('analyze', stock);
+};
+
+const handleInfo = (stock: Stock) => {
+  console.log('Showing info for stock:', stock);
+  emit('info', stock);
+};
 
 // 分頁相關
 const currentPage = ref(1);
 const pageSize = 10; // 每頁顯示數量
 
-const totalPages = computed(() => Math.ceil(props.stocks.length / pageSize));
+const totalPages = computed(() => Math.ceil(stockData.value.length / pageSize));
 const startIndex = computed(() => (currentPage.value - 1) * pageSize);
 const endIndex = computed(() => startIndex.value + pageSize);
 
 const paginatedStocks = computed(() => {
-  return props.stocks.slice(startIndex.value, endIndex.value);
+  return stockData.value.slice(startIndex.value, endIndex.value);
 });
 
 // 監聽 stocks 變化，重置頁碼
-watch(() => props.stocks, () => {
+watch(() => stockData.value, () => {
   currentPage.value = 1;
 });
 </script>

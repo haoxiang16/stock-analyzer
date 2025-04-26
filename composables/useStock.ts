@@ -13,8 +13,8 @@ export function useStock() {
     if (!searchQuery.value) return stocks.value;
     const query = searchQuery.value.toLowerCase();
     return stocks.value.filter(stock => 
-      stock.code.toLowerCase().includes(query) ||
-      stock.name.toLowerCase().includes(query)
+      stock.companyCode.toLowerCase().includes(query) ||
+      stock.companyName.toLowerCase().includes(query)
     );
   });
 

@@ -21,8 +21,8 @@ const formatFinancialData = (financials: YearlyFinancial[]) => {
 export const generateStockAnalysis = async (stockInfo: Stock): Promise<string> => {
   try {
     const prompt = `請分析這支股票的財務數據，並給出投資建議。以下是股票資訊：
-    代號：${stockInfo.code}
-    公司名稱：${stockInfo.name}
+    代號：${stockInfo.companyCode}
+    公司名稱：${stockInfo.companyName}
 
     財務數據：
     ${formatFinancialData(stockInfo.yearlyFinancials || [])}
@@ -47,8 +47,8 @@ export const generateStockAnalysis = async (stockInfo: Stock): Promise<string> =
 export const generateCompanyInfo = async (stockInfo: Stock): Promise<string> => {
   try {
     const prompt = `請提供這家公司的詳細介紹。以下是公司資訊：
-    代號：${stockInfo.code}
-    公司名稱：${stockInfo.name}
+    代號：${stockInfo.companyCode}
+    公司名稱：${stockInfo.companyName}
 
     
     請提供以下資訊：

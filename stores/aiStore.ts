@@ -7,7 +7,7 @@ export const useAIStore = defineStore('ai', {
   state: () => ({
     analyses: [] as StockAnalysis[],
     companyInfos: [] as CompanyInfo[],
-    useBackendAI: false // 預設使用本地 Gemini API
+    useBackendAI: false 
   }),
   
   actions: {
@@ -15,18 +15,17 @@ export const useAIStore = defineStore('ai', {
       try {
         // 從 stockStore 獲取股票資訊
         const stockStore = useStockStore()
-        const stock = stockStore.stocks.find(s => s.code === stockCode)
+        const stock = stockStore.stocks.find(s => s.companyCode === stockCode)
         
         if (!stock) {
           throw new Error('找不到該股票')
         }
 
-        // 始終使用本地 Gemini API 生成分析
         const analysis = await generateStockAnalysis(stock);
   
         const newAnalysis: StockAnalysis = {
-          code: stockCode,
-          name: stock.name,
+          code: stock.companyCode,
+          name: stock.companyName,
           analysis,
           timestamp: new Date().toISOString()
         }
@@ -43,19 +42,17 @@ export const useAIStore = defineStore('ai', {
       try {
         // 從 stockStore 獲取股票資訊
         const stockStore = useStockStore()
-        const stock = stockStore.stocks.find(s => s.code === stockCode)
+        const stock = stockStore.stocks.find(s => s.companyCode === stockCode)
         
         if (!stock) {
           throw new Error('找不到該股票')
         }
 
-        // 始終使用本地 Gemini API 生成公司資訊
         const info = await generateCompanyInfo(stock);
 
-        // 將公司資訊添加到 state 中
         const newInfo: CompanyInfo = {
-          code: stockCode,
-          name: stock.name,
+          code: stock.companyCode,
+          name: stock.companyName,
           info,
           timestamp: new Date().toISOString()
         }

@@ -79,7 +79,6 @@ export async function getToken(): Promise<string> {
   const username = import.meta.env.VITE_AUTH_USERNAME;
   const password = import.meta.env.VITE_AUTH_PASSWORD;
 
-
   return login(username, password);
 }
 

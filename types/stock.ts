@@ -9,14 +9,14 @@ export interface YearlyFinancial {
 
 // 股票資訊
 export interface Stock {
-  code: string;
-  name: string;
+  companyCode: string;
+  companyName: string;
   industry: string;
   market: string;
   yearlyFinancials: YearlyFinancial[];
-  // 添加 API 返回的原始欄位
-  companyCode?: string;
-  companyName?: string;
+  // 為了向後兼容，保留這些欄位但設為可選
+  code?: string;
+  name?: string;
 }
 
 // 篩選參數

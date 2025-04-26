@@ -63,17 +63,6 @@ onMounted(async () => {
   try {
     // 確保有有效的 token
     await getToken();
-    
-    // 註解掉自動加載數據的代碼，改為只取得授權
-    // const defaultParams = {
-    //   epsYears: 3,
-    //   operatingMarginYears: 3,
-    //   grossMarginYears: 3,
-    //   netProfitMarginYears: 3,
-    //   minOperatingMargin: 10,
-    //   minOperatingMarginYears: 3
-    // };
-    // fetchStocks(defaultParams);
   } catch (err) {
     console.error('初始化授權失敗:', err);
   }
@@ -103,7 +92,7 @@ const handleAnalyze = async () => {
     modalContent.value = '';
     analysisMode.value = 'analysis';
     aiModal.value?.show();
-    const result = await generateAnalysis(selectedStock.value.code);
+    const result = await generateAnalysis(selectedStock.value.companyCode);
     modalContent.value = result;
   } catch (err) {
     console.error('生成分析報告失敗:', err);
@@ -116,11 +105,11 @@ const handleInfo = async () => {
   if (!selectedStock.value) return;
   
   try {
-    modalTitle.value = `${selectedStock.value.name} (${selectedStock.value.code}) 公司資訊`;
+    modalTitle.value = `${selectedStock.value.companyName} (${selectedStock.value.companyCode}) 公司資訊`;
     modalContent.value = '';
     analysisMode.value = 'info';
     aiModal.value?.show();
-    const result = await generateCompanyInfo(selectedStock.value.code);
+    const result = await generateCompanyInfo(selectedStock.value.companyCode);
     modalContent.value = result;
   } catch (err) {
     console.error('生成公司資訊失敗:', err);
