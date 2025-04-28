@@ -33,7 +33,9 @@ export const generateStockAnalysis = async (stockInfo: Stock): Promise<string> =
     3. 投資風險評估
     4. 投資建議
     
-    請用繁體中文回答，並保持專業、客觀的語氣。`;
+    請用繁體中文回答，並保持專業、客觀的語氣。
+    
+    重要提示：請直接開始您的分析，不要使用"好的"、"以下是"、"這是"等開場白，直接進入內容。`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -57,7 +59,9 @@ export const generateCompanyInfo = async (stockInfo: Stock): Promise<string> => 
     3. 市場地位和競爭優勢
     4. 未來發展策略和機會
     
-    請用繁體中文回答，並保持專業、客觀的語氣。`;
+    請用繁體中文回答，並保持專業、客觀的語氣。
+    
+    重要提示：請直接開始您的介紹，不要使用"好的"、"以下是"、"這是"等開場白，直接進入內容。`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
