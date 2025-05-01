@@ -3,8 +3,8 @@
     <div class="card-body p-4 sm:p-6 md:p-8">
       <h2 class="card-title text-xl sm:text-2xl mb-4 sm:mb-6 text-slate-800 font-bold">股票篩選結果</h2>
       
-      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-md border border-blue-100 mb-6 overflow-hidden">
-        <div class="px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white flex items-center">
+      <div class="bg-blue-50 rounded-xl shadow-md border border-blue-100 mb-6 overflow-hidden">
+        <div class="px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mr-2"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           <span class="font-bold text-lg">財務指標說明</span>
         </div>
@@ -22,36 +22,36 @@
               </div>
             </li>
             <li class="flex items-start">
-              <div class="bg-indigo-100 rounded-full p-1 mr-3 mt-0.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div class="bg-blue-100 rounded-full p-1 mr-3 mt-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
               <div>
-                <span class="font-bold text-indigo-700">營業利益率</span>
+                <span class="font-bold text-blue-700">營業利益率</span>
                 <span class="text-gray-600">：營業利益/營業收入 (核心業務獲利能力)</span>
               </div>
             </li>
             <li class="flex items-start">
-              <div class="bg-purple-100 rounded-full p-1 mr-3 mt-0.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div class="bg-blue-100 rounded-full p-1 mr-3 mt-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
                 </svg>
               </div>
               <div>
-                <span class="font-bold text-purple-700">毛利率</span>
+                <span class="font-bold text-blue-700">毛利率</span>
                 <span class="text-gray-600">：毛利/營業收入 (產品售價與成本差距)</span>
               </div>
             </li>
             <li class="flex items-start">
-              <div class="bg-sky-100 rounded-full p-1 mr-3 mt-0.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div class="bg-blue-100 rounded-full p-1 mr-3 mt-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
                 </svg>
               </div>
               <div>
-                <span class="font-bold text-sky-700">淨利率</span>
+                <span class="font-bold text-blue-700">淨利率</span>
                 <span class="text-gray-600">：稅後淨利/營業收入 (最終獲利能力)</span>
               </div>
             </li>
