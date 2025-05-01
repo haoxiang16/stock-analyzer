@@ -1,13 +1,15 @@
 <template>
   <dialog :id="computedModalId" class="modal">
-    <div class="modal-box max-w-4xl bg-white rounded-xl shadow-xl">
+    <div class="modal-box max-w-4xl bg-slate-900 rounded-xl shadow-xl border border-slate-700">
       <!-- 標題區域 -->
-      <div class="flex items-center px-8 py-6 bg-slate-50 border-b border-slate-200">
-        <div class="w-1 h-8 bg-indigo-500 rounded-full mr-4 shadow-sm"></div>
-        <h3 class="text-2xl font-bold text-slate-800">
-          {{ title }}
-        </h3>
-        <button class="btn btn-sm btn-circle absolute right-4 top-4 bg-slate-200 hover:bg-slate-300 border-0 text-slate-700" @click="hide">
+      <div class="flex items-center px-8 py-6 bg-slate-800 border-b border-slate-700 rounded-t-xl">
+        <div class="flex items-center">
+          <div class="w-1 h-8 bg-emerald-500 rounded-full mr-4 shadow-sm"></div>
+          <h3 class="text-2xl font-bold text-white">
+            {{ title }}
+          </h3>
+        </div>
+        <button class="btn btn-sm btn-circle absolute right-4 top-4 bg-slate-700 hover:bg-slate-600 border-0 text-white" @click="hide">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -17,14 +19,14 @@
       <!-- 內容區域 -->
       <div class="min-h-[calc(90vh-8rem)]">
         <div v-if="loading" class="loading-container">
-          <span class="loading loading-spinner loading-lg text-indigo-600"></span>
-          <p class="loading-text">AI 正在分析資料中，請稍候...</p>
+          <span class="loading loading-spinner loading-lg text-emerald-400"></span>
+          <p class="loading-text text-slate-300">AI 正在分析資料中，請稍候...</p>
         </div>
         <div v-else class="markdown-body" v-html="renderedContent"></div>
       </div>
     </div>
     
-    <form method="dialog" class="modal-backdrop bg-slate-900/20 backdrop-blur-sm">
+    <form method="dialog" class="modal-backdrop bg-black/40 backdrop-blur-sm">
       <button>關閉</button>
     </form>
   </dialog>
@@ -100,19 +102,19 @@ defineExpose({
 
 <style scoped>
 .markdown-body {
-  @apply px-8 py-6 text-lg leading-relaxed text-slate-700;
+  @apply px-8 py-6 text-lg leading-relaxed text-slate-300;
 }
 
 .markdown-body :deep(h1) {
-  @apply text-3xl font-bold mb-6 pb-4 border-b border-slate-200 text-slate-800;
+  @apply text-3xl font-bold mb-6 pb-4 border-b border-slate-700 text-white;
 }
 
 .markdown-body :deep(h2) {
-  @apply text-2xl font-bold mt-8 mb-4 text-slate-800;
+  @apply text-2xl font-bold mt-8 mb-4 text-white;
 }
 
 .markdown-body :deep(h3) {
-  @apply text-xl font-bold mt-6 mb-3 text-slate-800;
+  @apply text-xl font-bold mt-6 mb-3 text-white;
 }
 
 .markdown-body :deep(p) {
@@ -126,24 +128,24 @@ defineExpose({
 .markdown-body :deep(li) {
   @apply relative pl-2;
   @apply before:absolute before:left-[-1.5rem] before:top-[0.7rem] before:w-2.5 before:h-2.5;
-  @apply before:bg-indigo-500;
+  @apply before:bg-emerald-500;
   @apply before:rounded-full before:shadow-sm;
 }
 
 .markdown-body :deep(strong) {
-  @apply font-semibold text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded;
+  @apply font-semibold text-white bg-slate-800 px-1.5 py-0.5 rounded;
 }
 
 .markdown-body :deep(table) {
-  @apply w-full my-6 border-collapse bg-white rounded-lg overflow-hidden shadow-sm;
+  @apply w-full my-6 border-collapse bg-slate-800 rounded-lg overflow-hidden shadow-sm;
 }
 
 .markdown-body :deep(th) {
-  @apply bg-slate-50 text-left py-4 px-6 font-semibold text-slate-700 border-b border-slate-200;
+  @apply bg-slate-700 text-left py-4 px-6 font-semibold text-slate-200 border-b border-slate-600;
 }
 
 .markdown-body :deep(td) {
-  @apply py-4 px-6 border-b border-slate-100 text-slate-600;
+  @apply py-4 px-6 border-b border-slate-700 text-slate-300;
 }
 
 .markdown-body :deep(tr:last-child td) {
@@ -151,12 +153,12 @@ defineExpose({
 }
 
 .markdown-body :deep(blockquote) {
-  @apply my-6 pl-6 border-l-4 border-indigo-500 bg-indigo-50/50 py-4 pr-4 rounded-r-lg;
-  @apply text-slate-700 italic;
+  @apply my-6 pl-6 border-l-4 border-emerald-500 bg-slate-800/50 py-4 pr-4 rounded-r-lg;
+  @apply text-slate-300 italic;
 }
 
 .markdown-body :deep(code) {
-  @apply bg-slate-100 px-2 py-0.5 rounded text-slate-700 font-mono text-sm;
+  @apply bg-slate-800 px-2 py-0.5 rounded text-emerald-300 font-mono text-sm;
 }
 
 .markdown-body :deep(pre) {
@@ -164,7 +166,7 @@ defineExpose({
 }
 
 .markdown-body :deep(pre code) {
-  @apply bg-transparent text-slate-200 p-0 text-sm leading-relaxed;
+  @apply bg-transparent text-slate-300 p-0 text-sm leading-relaxed;
 }
 
 /* Loading 狀態樣式 */
@@ -173,13 +175,13 @@ defineExpose({
 }
 
 .loading-text {
-  @apply mt-4 text-lg font-medium text-slate-600;
+  @apply mt-4 text-lg font-medium;
 }
 
 /* 滾動條樣式 */
 .markdown-body {
   scrollbar-width: thin;
-  scrollbar-color: #CBD5E1 #F1F5F9;
+  scrollbar-color: #475569 #1e293b;
 }
 
 .markdown-body::-webkit-scrollbar {
@@ -187,30 +189,15 @@ defineExpose({
 }
 
 .markdown-body::-webkit-scrollbar-track {
-  @apply bg-slate-100 rounded-full;
+  @apply bg-slate-800 rounded-full;
 }
 
 .markdown-body::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
+  @apply bg-slate-600 rounded-full hover:bg-slate-500 transition-colors;
 }
 
 /* 數據高亮 */
 .markdown-body :deep(.highlight-data) {
-  @apply bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-medium;
-}
-
-.markdown-body :deep(.highlight-negative) {
-  @apply bg-red-50 text-red-700 px-2 py-0.5 rounded font-medium;
-}
-
-/* 卡片式段落 */
-.markdown-body :deep(.info-card) {
-  @apply bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-6;
-}
-
-/* 重要提示樣式 */
-.markdown-body :deep(.important-note) {
-  @apply bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mb-6;
-  @apply text-amber-800 text-base;
+  @apply bg-slate-800 text-emerald-300 px-2 py-0.5 rounded font-medium;
 }
 </style> 

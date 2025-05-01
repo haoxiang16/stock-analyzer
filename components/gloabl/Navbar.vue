@@ -1,19 +1,15 @@
 <template>
-<div class="navbar sticky top-0 z-50 bg-slate-800 shadow-md">
-
-  <div class="navbar-center">
-    <a class="btn btn-ghost text-2xl font-bold normal-case text-white">
-      <span class="text-indigo-300">Stock</span><span class="ml-1">Screener</span>
-    </a>
-  </div>
+<div class="bg-slate-900 shadow-md h-12 sticky top-0 z-50 flex items-center">
+  <span class="text-emerald-400 text-lg font-bold ml-0">Stock</span>
+  <span class="text-white text-lg font-bold ml-1">Analyzer</span>
 </div>
 </template>
 
 <style scoped>
-.navbar {
-  @apply py-2;
-  background: linear-gradient(to right, #1e293b, #334155);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+div {
+  background: linear-gradient(to right, #0f172a, #1e293b);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-left: 15px;
 }
 </style>
 

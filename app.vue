@@ -1,10 +1,20 @@
 <template>
-  <div class="min-h-screen bg-base-100">
+  <div class="min-h-screen bg-slate-950 text-slate-200">
     <Navbar />
-    <div class="container mx-auto px-4 py-8 pt-20">
+    <div class="container mx-auto px-4 py-6 pt-16">
       
       <!-- 移除最大寬度限制，改用較大的寬度 -->
       <div class="max-w-[1600px] mx-auto">
+        <div class="flex items-center mb-6 pb-4 border-b border-slate-800">
+          <div class="flex-1">
+            <h1 class="text-2xl md:text-3xl font-bold text-white">
+              <span class="text-emerald-400">財務</span>數據分析系統
+            </h1>
+            <p class="mt-2 text-slate-400 text-sm md:text-base">專業投資人的財務分析工具，助您發掘高品質成長股</p>
+          </div>
+     
+        </div>
+
         <StockFilter
           :loading="stockLoading"
           @filter="handleFilter"
@@ -120,16 +130,31 @@ const handleInfo = async () => {
 </script>
 
 <style>
-/* 調整容器在不同螢幕尺寸的內邊距 */
+/* 全域樣式設定 */
+body {
+  @apply bg-slate-950;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
 .container {
-  @apply px-4 lg:px-8 mt-16; /* 添加上邊距為導航欄留出空間 */
+  @apply px-4 lg:px-8 mt-12; /* 修改上邊距從16減少到12，配合新的導航欄高度 */
 }
 
-/* 確保內容在超大螢幕上也有合適的邊距 */
 @media (min-width: 1600px) {
   .container {
     max-width: 1600px;
     @apply px-12;
   }
+}
+
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700 rounded-full hover:bg-slate-600 transition-colors;
 }
 </style>
