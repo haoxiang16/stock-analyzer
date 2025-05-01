@@ -9,14 +9,13 @@
           <label class="label">
             <span class="label-text text-slate-700 font-medium">EPS 連續成長年數</span>
           </label>
-          <input 
-            type="number" 
-            class="input input-bordered w-full bg-white border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200" 
+          <select 
+            class="select select-bordered w-full bg-white border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200" 
             v-model="filters.epsYears"
-            min="1"
-            max="10"
             :disabled="isLoading"
-          />
+          >
+            <option v-for="i in 10" :key="i" :value="i">{{ i }} 年</option>
+          </select>
         </div>
 
         <!-- 營業利益率連續成長年數 -->
@@ -24,14 +23,13 @@
           <label class="label">
             <span class="label-text text-slate-700 font-medium">營業利益率連續成長年數</span>
           </label>
-          <input 
-            type="number" 
-            class="input input-bordered w-full bg-white border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200" 
+          <select 
+            class="select select-bordered w-full bg-white border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200" 
             v-model="filters.operatingMarginYears"
-            min="1"
-            max="10"
             :disabled="isLoading"
-          />
+          >
+            <option v-for="i in 10" :key="i" :value="i">{{ i }} 年</option>
+          </select>
         </div>
 
         <!-- 毛利率年數 -->
@@ -39,14 +37,13 @@
           <label class="label">
             <span class="label-text text-slate-700 font-medium">毛利率連續成長年數</span>
           </label>
-          <input 
-            type="number" 
-            class="input input-bordered w-full bg-white border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200" 
+          <select 
+            class="select select-bordered w-full bg-white border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200" 
             v-model="filters.grossMarginYears"
-            min="1"
-            max="10"
             :disabled="isLoading"
-          />
+          >
+            <option v-for="i in 10" :key="i" :value="i">{{ i }} 年</option>
+          </select>
         </div>
 
         <!-- 淨利率年數 -->
@@ -54,14 +51,13 @@
           <label class="label">
             <span class="label-text text-slate-700 font-medium">淨利率連續成長年數</span>
           </label>
-          <input 
-            type="number" 
-            class="input input-bordered w-full bg-white border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200" 
+          <select 
+            class="select select-bordered w-full bg-white border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200" 
             v-model="filters.netProfitMarginYears"
-            min="1"
-            max="10"
             :disabled="isLoading"
-          />
+          >
+            <option v-for="i in 10" :key="i" :value="i">{{ i }} 年</option>
+          </select>
         </div>
 
         <!-- 最小營業利益率 -->
@@ -69,14 +65,13 @@
           <label class="label">
             <span class="label-text text-slate-700 font-medium">最小營業利益率 (%)</span>
           </label>
-          <input 
-            type="number" 
-            class="input input-bordered w-full bg-white border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200" 
+          <select 
+            class="select select-bordered w-full bg-white border-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200" 
             v-model="filters.minOperatingMargin"
-            min="0"
-            max="100"
             :disabled="isLoading"
-          />
+          >
+            <option v-for="i in 20" :key="i" :value="i * 5">{{ i * 5 }}%</option>
+          </select>
         </div>
       </div>
 
