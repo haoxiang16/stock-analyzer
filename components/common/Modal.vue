@@ -92,7 +92,6 @@ const hide = () => {
   }
 };
 
-// 暴露方法
 defineExpose({
   show,
   hide,

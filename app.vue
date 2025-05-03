@@ -43,8 +43,8 @@
 import { ref, onMounted } from 'vue';
 import StockFilter from '@/components/StockFilter.vue';
 import StockList from '@/components/StockList.vue';
-import AIModal from '~/components/gloabl/Modal.vue';
-import Navbar from '~/components/gloabl/Navbar.vue';
+import AIModal from '~/components/common/Modal.vue';
+import Navbar from '~/components/common/Navbar.vue';
 import { useStock } from '@/composables/useStock';
 import { useAI } from '@/composables/useAI';
 import type { Stock, StockAnalysisParams } from '@/types/stock';

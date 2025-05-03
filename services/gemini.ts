@@ -1,34 +1,52 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import type { Stock, YearlyFinancial } from '@/types/stock';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import type { Stock, YearlyFinancial } from "@/types/stock";
 
 // 初始化 Gemini API
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 // 創建模型實例，增加生成參數
-const model = genAI.getGenerativeModel({ 
-  model: 'gemini-2.0-flash',
+const model = genAI.getGenerativeModel({
+  model: "gemini-2.0-flash",
   generationConfig: {
     temperature: 0.1, // 低溫度值使輸出更確定性和一致
-    topK: 16,         // 控制每一步考慮的候選詞數量
-    topP: 0.8,        // 控制採樣概率閾值
+    topK: 16, // 控制每一步考慮的候選詞數量
+    topP: 0.8, // 控制採樣概率閾值
     //maxOutputTokens: 2048 // 確保輸出長度一致
-  }
+  },
 });
 
 // 格式化財務數據
 const formatFinancialData = (financials: YearlyFinancial[]) => {
-  return financials.map(f => `
+  return financials
+    .map(
+      (f) => `
     ${f.year}年：
-    - EPS：${f.eps?.toFixed(2) || 'N/A'}
-    - 營業利益率：${f.operatingMargin !== undefined ? f.operatingMargin.toFixed(2) + '%' : 'N/A'}
-    - 毛利率：${f.grossMargin !== undefined ?f.grossMargin.toFixed(2) + '%' : 'N/A'}
-    - 淨利率：${f.netProfitMargin !== undefined ? f.netProfitMargin.toFixed(2) + '%' : 'N/A'}
-  `).join('\n');
+    - EPS：${f.eps?.toFixed(2) || "N/A"}
+    - 營業利益率：${
+      f.operatingMargin !== undefined
+        ? f.operatingMargin.toFixed(2) + "%"
+        : "N/A"
+    }
+    - 毛利率：${
+      f.grossMargin !== undefined ? f.grossMargin.toFixed(2) + "%" : "N/A"
+    }
+    - 淨利率：${
+      f.netProfitMargin !== undefined
+        ? f.netProfitMargin.toFixed(2) + "%"
+        : "N/A"
+    }
+  `
+    )
+    .join("\n");
 };
 
-export const generateStockAnalysis = async (stockInfo: Stock): Promise<string> => {
+export const generateStockAnalysis = async (
+  stockInfo: Stock
+): Promise<string> => {
   try {
-    const prompt = `對${stockInfo.companyCode} ${stockInfo.companyName}進行全面財務分析：
+    const prompt = `對${stockInfo.companyCode} ${
+      stockInfo.companyName
+    }進行全面財務分析：
 
     公司基本資料：
     • 股票代號：${stockInfo.companyCode}
@@ -67,12 +85,14 @@ export const generateStockAnalysis = async (stockInfo: Stock): Promise<string> =
     const response = await result.response;
     return response.text();
   } catch (error) {
-    console.error('Gemini API 分析報告生成失敗:', error);
-    throw new Error('無法生成分析報告，請稍後再試');
+    console.error("Gemini API 分析報告生成失敗:", error);
+    throw new Error("無法生成分析報告，請稍後再試");
   }
 };
 
-export const generateCompanyInfo = async (stockInfo: Stock): Promise<string> => {
+export const generateCompanyInfo = async (
+  stockInfo: Stock
+): Promise<string> => {
   try {
     const prompt = `提供${stockInfo.companyCode} ${stockInfo.companyName}的完整企業分析報告：
 
@@ -114,7 +134,7 @@ export const generateCompanyInfo = async (stockInfo: Stock): Promise<string> => 
     const response = await result.response;
     return response.text();
   } catch (error) {
-    console.error('Gemini API 公司資訊生成失敗:', error);
-    throw new Error('無法生成公司資訊，請稍後再試');
+    console.error("Gemini API 公司資訊生成失敗:", error);
+    throw new Error("無法生成公司資訊，請稍後再試");
   }
-}; 
+};
