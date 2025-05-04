@@ -20,6 +20,7 @@
           @filter="handleFilter"
         />
         <StockList
+          ref="stockListRef"
           :stocks="filteredStocks"
           :loading="stockLoading"
           @analyze="handleAnalyzeFromList"
@@ -40,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watchEffect, nextTick } from 'vue';
 import StockFilter from '@/components/StockFilter.vue';
 import StockList from '@/components/StockList.vue';
 import AIModal from '~/components/common/Modal.vue';
@@ -67,6 +68,7 @@ const aiModal = ref<InstanceType<typeof AIModal> | null>(null);
 const modalTitle = ref('');
 const modalContent = ref('');
 const analysisMode = ref<'analysis' | 'info' | null>(null);
+const stockListRef = ref<InstanceType<typeof StockList> | null>(null);
 
 // 初始化時檢查登入狀態
 onMounted(async () => {
@@ -77,6 +79,25 @@ onMounted(async () => {
     console.error('初始化授權失敗:', err);
   }
 });
+
+// 監聽股票加載狀態，當從加載變為非加載狀態且有數據時，滾動到股票列表
+watchEffect(() => {
+  if (!stockLoading.value && filteredStocks.value.length > 0) {
+    nextTick(() => {
+      scrollToStockList();
+    });
+  }
+});
+
+// 滾動到股票列表區域
+const scrollToStockList = () => {
+  if (stockListRef.value) {
+    const stockListElement = stockListRef.value.$el;
+    if (stockListElement) {
+      stockListElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+};
 
 const handleFilter = (params: StockAnalysisParams) => {
   fetchStocks(params);
