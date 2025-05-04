@@ -1,5 +1,5 @@
 {
-  "name": "stock-analyzer",
+  "name": "stock-screener",
   "private": true,
   "type": "module",
   "scripts": {

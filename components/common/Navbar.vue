@@ -1,7 +1,7 @@
 <template>
 <div class="bg-slate-900 shadow-md h-12 sticky top-0 z-50 flex items-center">
   <span class="text-emerald-400 text-lg font-bold ml-0">Stock</span>
-  <span class="text-white text-lg font-bold ml-1">Analyzer</span>
+  <span class="text-white text-lg font-bold ml-1">Screener</span>
 </div>
 </template>
 
