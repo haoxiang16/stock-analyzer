@@ -1,5 +1,7 @@
 # 股票分析系統
 
+網站: [https://stock-screener-ai.netlify.app/](https://stock-screener-ai.netlify.app/)
+
 使用Nuxt.js開發的股票分析系統，提供財報篩選和AI分析功能。
 
 ## 功能特點
