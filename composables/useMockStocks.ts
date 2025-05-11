@@ -60,7 +60,6 @@ export const useMockStocks = () => {
   // 如果使用模擬數據，同步到 stockStore
   if (useMockData) {
     stockStore.stocks = mockStocks
-    stockStore.allStocks = [...mockStocks]
   }
 
   return {

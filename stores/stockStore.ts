@@ -1,96 +1,94 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
-import type { AxiosResponse } from 'axios'
-import type { Stock, StockAnalysisParams } from '@/types/stock'
+import type { Stock, StockAnalysisParams, PaginatedResponse } from '@/types/stock'
 import { createAuthenticatedAxiosInstance } from '@/services/auth'
-
-// 定義 API 返回的數據類型
-interface APIStockResponse {
-  companyCode: string;
-  companyName: string;
-  industry?: string;
-  market?: string;
-  yearlyFinancials?: {
-    year: number;
-    eps: number;
-    operatingMargin: number;
-    grossMargin: number;
-    netProfitMargin: number;
-  }[];
-}
 
 export const useStockStore = defineStore('stock', {
   state: () => ({
     stocks: [] as Stock[],
-    allStocks: [] as Stock[] // 用於保存所有原始股票資料
+    totalCount: 0,
+    currentPage: 1,
+    pageSize: 10,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
+    loading: false,
+    error: null as string | null,
+    currentParams: {} as StockAnalysisParams
   }),
   
   actions: {
     async fetchStocks(params?: StockAnalysisParams): Promise<Stock[]> {
+      this.loading = true;
+      this.error = null;
+      
       try {
-        // 使用認證服務來獲取帶有 token 的 axios 實例
         const axiosInstance = await createAuthenticatedAxiosInstance();
-
-        // 重試函數
-        const retryRequest = async <T>(
-          fn: () => Promise<AxiosResponse<T>>,
-          retries = 3,
-          delay = 1000
-        ): Promise<AxiosResponse<T>> => {
-          try {
-            return await fn()
-          } catch (err) {
-            if (retries === 0) throw err
-            await new Promise(resolve => setTimeout(resolve, delay))
-            return retryRequest(fn, retries - 1, delay * 2)
-          }
+        
+        // 保存當前的篩選條件
+        if (params) {
+          this.currentParams = { ...params };
         }
+        
+        // 合併分頁參數
+        const queryParams = {
+          ...this.currentParams,
+          pageNumber: params?.pageNumber || this.currentPage,
+          pageSize: params?.pageSize || this.pageSize
+        };
 
-        // 發送 API 請求
-        const response = await retryRequest<APIStockResponse[]>(
-          () => axiosInstance.post<APIStockResponse[]>('/api/StockAnalysis/growing-financials', params),
-          3,
-          1000
-        )
+        const response = await axiosInstance.get<PaginatedResponse<Stock>>(
+          '/api/StockAnalysis/growing-financials',
+          { params: queryParams }
+        );
 
         if (response.data) {
-          const responseData = Array.isArray(response.data) ? response.data : [response.data]
+          this.stocks = response.data.items;
+          this.totalCount = response.data.totalCount;
+          this.currentPage = response.data.pageNumber;
+          this.pageSize = response.data.pageSize;
+          this.totalPages = response.data.totalPages;
+          this.hasNextPage = response.data.hasNextPage;
+          this.hasPreviousPage = response.data.hasPreviousPage;
           
-          // 處理 API 回傳的資料，確保符合我們的類型定義
-          const formattedStocks: Stock[] = responseData.map(stock => ({
-            code: stock.companyCode || '',
-            name: stock.companyName || '',
-            industry: stock.industry || '未分類',
-            market: stock.market || 'TSE',
-            yearlyFinancials: stock.yearlyFinancials || [],
-            companyCode: stock.companyCode,
-            companyName: stock.companyName
-          }))
-          
-          this.stocks = formattedStocks
-          this.allStocks = [...formattedStocks]
-          return this.stocks
+          return this.stocks;
         } else {
-          throw new Error('沒有找到符合條件的股票')
+          throw new Error('沒有找到符合條件的股票');
         }
       } catch (error) {
-        console.error('獲取股票資料失敗:', error)
+        console.error('獲取股票資料失敗:', error);
         
-        // 處理常見的錯誤類型
         if (axios.isAxiosError(error)) {
           if (error.code === 'ECONNABORTED') {
-            throw new Error('請求超時，請檢查後端服務是否正常運行')
+            this.error = '請求超時，請檢查後端服務是否正常運行';
           } else if (error.response) {
-            throw new Error(`服務器錯誤 (${error.response.status}): ${error.response.data?.message || error.message}`)
+            this.error = `服務器錯誤 (${error.response.status}): ${error.response.data?.message || error.message}`;
           } else if (error.request) {
-            throw new Error('無法連接到服務器，請確認後端服務是否啟動')
+            this.error = '無法連接到服務器，請確認後端服務是否啟動';
           } else {
-            throw new Error(`請求錯誤: ${error.message}`)
+            this.error = `請求錯誤: ${error.message}`;
           }
+        } else {
+          this.error = error instanceof Error ? error.message : '未知錯誤';
         }
         
-        throw error instanceof Error ? error : new Error('未知錯誤')
+        throw error;
+      } finally {
+        this.loading = false;
       }
+    },
+
+    getCurrentParams(): StockAnalysisParams {
+      return { ...this.currentParams };
+    },
+
+    setPage(page: number) {
+      this.currentPage = page;
+    },
+
+    setPageSize(size: number) {
+      this.pageSize = size;
+      this.currentPage = 1; // 重置到第一頁
     }
   }
 }) 

@@ -11,9 +11,15 @@ export interface YearlyFinancial {
 export interface Stock {
   companyCode: string;
   companyName: string;
-  industry: string;
-  market: string;
-  yearlyFinancials: YearlyFinancial[];
+  industry?: string;
+  market?: string;
+  yearlyFinancials?: {
+    year: number;
+    eps: number;
+    operatingMargin: number;
+    grossMargin: number;
+    netProfitMargin: number;
+  }[];
   // 為了向後兼容，保留這些欄位但設為可選
   code?: string;
   name?: string;
@@ -27,6 +33,8 @@ export interface StockAnalysisParams {
   netProfitMarginYears?: number;
   minOperatingMargin?: number;
   minOperatingMarginYears?: number;
+  pageNumber?: number;
+  pageSize?: number;
 }
 
 export interface StockAnalysis {
@@ -41,4 +49,14 @@ export interface CompanyInfo {
   name: string;
   info: string;
   timestamp: string;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 } 

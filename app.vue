@@ -23,8 +23,15 @@
           ref="stockListRef"
           :stocks="filteredStocks"
           :loading="stockLoading"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :total-pages="totalPages"
+          :has-next-page="hasNextPage"
+          :has-previous-page="hasPreviousPage"
           @analyze="handleAnalyzeFromList"
           @info="handleInfoFromList"
+          @page-change="setPage"
+          @page-size-change="setPageSize"
         />
       </div>
     </div>
@@ -37,6 +44,10 @@
       :loading="aiLoading"
       modalId="ai_analysis_modal"
     />
+
+    <!-- SEO JSON-LD Schema -->
+    <SEOJsonLdSchema type="website" :data="{}"/>
+    <SEOJsonLdSchema type="organization" :data="{}"/>
   </div>
 </template>
 
@@ -51,10 +62,18 @@ import { useAI } from '@/composables/useAI';
 import type { Stock, StockAnalysisParams } from '@/types/stock';
 import { getToken } from '@/services/auth';
 
+
 const { 
   loading: stockLoading,
   filteredStocks,
   fetchStocks,
+  currentPage,
+  pageSize,
+  totalPages,
+  hasNextPage,
+  hasPreviousPage,
+  setPage,
+  setPageSize
 } = useStock();
 
 const {
@@ -119,7 +138,7 @@ const handleAnalyze = async () => {
   if (!selectedStock.value) return;
   
   try {
-    modalTitle.value = `${selectedStock.value.name} (${selectedStock.value.code}) 分析報告`;
+    modalTitle.value = `${selectedStock.value.companyName} (${selectedStock.value.companyCode}) 分析報告`;
     modalContent.value = '';
     analysisMode.value = 'analysis';
     aiModal.value?.show();

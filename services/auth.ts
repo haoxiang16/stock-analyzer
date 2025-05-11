@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useRuntimeConfig } from '#app';
 
 interface LoginResponse {
   token: string;
@@ -24,8 +25,9 @@ export async function login(
   password: string
 ): Promise<string> {
   try {
+    const config = useRuntimeConfig();
     const response = await axios.post<LoginResponse>(
-      "https://stockscanner.azurewebsites.net/api/Auth/login",
+      `${config.public.apiBaseUrl}/api/Auth/login`,
       { username, password },
       {
         headers: {
@@ -118,10 +120,11 @@ export function getTokenRemainingTime(): number {
  * 創建一個帶有 Authorization header 的 axios 實例
  */
 export async function createAuthenticatedAxiosInstance() {
+  const config = useRuntimeConfig();
   const token = await getToken();
 
   return axios.create({
-    baseURL: "https://stockscanner.azurewebsites.net",
+    baseURL: config.public.apiBaseUrl,
     timeout: 30000,
     headers: {
       "Content-Type": "application/json",

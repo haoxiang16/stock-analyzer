@@ -9,14 +9,14 @@ export function useStock() {
   const searchQuery = ref('');
 
   const stocks = computed(() => stockStore.stocks);
-  const filteredStocks = computed(() => {
-    if (!searchQuery.value) return stocks.value;
-    const query = searchQuery.value.toLowerCase();
-    return stocks.value.filter(stock => 
-      stock.companyCode.toLowerCase().includes(query) ||
-      stock.companyName.toLowerCase().includes(query)
-    );
-  });
+  const totalCount = computed(() => stockStore.totalCount);
+  const currentPage = computed(() => stockStore.currentPage);
+  const pageSize = computed(() => stockStore.pageSize);
+  const totalPages = computed(() => stockStore.totalPages);
+  const hasNextPage = computed(() => stockStore.hasNextPage);
+  const hasPreviousPage = computed(() => stockStore.hasPreviousPage);
+
+  const filteredStocks = computed(() => stocks.value);
 
   const fetchStocks = async (params?: StockAnalysisParams) => {
     loading.value = true;
@@ -35,13 +35,41 @@ export function useStock() {
     searchQuery.value = query;
   };
 
+  const setPage = (page: number) => {
+    stockStore.setPage(page);
+    const currentParams = stockStore.getCurrentParams();
+    fetchStocks({
+      ...currentParams,
+      pageNumber: page,
+      pageSize: pageSize.value
+    });
+  };
+
+  const setPageSize = (size: number) => {
+    stockStore.setPageSize(size);
+    const currentParams = stockStore.getCurrentParams();
+    fetchStocks({
+      ...currentParams,
+      pageNumber: 1,
+      pageSize: size
+    });
+  };
+
   return {
     loading,
     error,
     stocks,
     filteredStocks,
     searchQuery,
+    totalCount,
+    currentPage,
+    pageSize,
+    totalPages,
+    hasNextPage,
+    hasPreviousPage,
     fetchStocks,
-    setSearchQuery
+    setSearchQuery,
+    setPage,
+    setPageSize
   };
 } 

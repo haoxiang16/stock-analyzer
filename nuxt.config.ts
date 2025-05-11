@@ -24,7 +24,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      useMockData: process.env.VITE_USE_MOCK_DATA
+      useMockData: process.env.VITE_USE_MOCK_DATA,
+      apiBaseUrl: process.env.NODE_ENV === 'development' 
+        ? 'https://localhost:7208'
+        : 'https://stockscanner.azurewebsites.net'
     }
   }
 })

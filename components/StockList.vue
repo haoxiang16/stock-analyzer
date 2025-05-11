@@ -67,11 +67,12 @@
         </div>
       </div>
       
-      <div v-if="loading" class="flex justify-center py-6 sm:py-8">
-        <span class="loading loading-spinner w-8 h-8 sm:w-12 sm:h-12 text-emerald-400"></span>
+      <div v-if="loading" class="text-center py-8">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400 mx-auto"></div>
+        <p class="mt-4 text-slate-400">載入中...</p>
       </div>
       
-      <div v-else-if="stockData.length === 0" class="text-center py-8 sm:py-12 text-slate-400">
+      <div v-else-if="stocks.length === 0" class="text-center py-8 sm:py-12 text-slate-400">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-3 sm:mb-4 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
@@ -92,7 +93,7 @@
               </tr>
             </thead>
             <tbody class="text-base divide-y divide-slate-700">
-              <tr v-for="stock in paginatedStocks" :key="stock.companyCode" 
+              <tr v-for="stock in stocks" :key="stock.companyCode" 
                   class="hover:bg-slate-800/70 transition-colors duration-150 bg-slate-900">
                 <td class="py-6 text-emerald-400 text-xl font-bold border-b border-slate-700 px-4">
                   {{ stock.companyCode }}
@@ -144,7 +145,7 @@
                 <td class="border-b border-slate-700 py-4 px-4">
                   <div class="flex flex-col items-center gap-3 px-4">
                     <button
-                      @click="handleAnalyze(stock)"
+                      @click="$emit('analyze', stock)"
                       class="btn w-48 text-base font-medium h-auto bg-slate-700 hover:bg-slate-600 text-white border border-slate-600 shadow-md hover:shadow-lg transition-all duration-300 py-3 rounded-lg"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -153,7 +154,7 @@
                       財報分析
                     </button>
                     <button
-                      @click="handleInfo(stock)"
+                      @click="$emit('info', stock)"
                       class="btn w-48 text-base font-medium h-auto bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 shadow-md hover:shadow-lg transition-all duration-300 py-3 rounded-lg"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -170,7 +171,7 @@
         
         <!-- 手機版卡片列表 - 只在sm以下顯示 -->
         <div class="sm:hidden space-y-4">
-          <div v-for="stock in paginatedStocks" :key="stock.companyCode" class="bg-slate-800/50 rounded-lg border border-slate-700 shadow-md overflow-hidden">
+          <div v-for="stock in stocks" :key="stock.companyCode" class="bg-slate-800/50 rounded-lg border border-slate-700 shadow-md overflow-hidden">
             <!-- 股票標頭區域 -->
             <div class="flex items-center justify-between bg-slate-800 px-4 py-3 border-b border-slate-700">
               <div class="flex items-center space-x-2">
@@ -186,7 +187,7 @@
             <div class="px-4 py-3">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs font-bold text-slate-400">財務數據摘要</span>
-                <span class="text-xs bg-slate-800 px-2 py-0.5 rounded text-emerald-300">近 {{ Math.min(3, stock.yearlyFinancials.length) }} 年</span>
+                <span class="text-xs bg-slate-800 px-2 py-0.5 rounded text-emerald-300">近 {{ Math.min(3, stock.yearlyFinancials?.length ?? 0) }} 年</span>
               </div>
               
               <!-- 財務數據表格容器，啟用橫向滾動 -->
@@ -203,7 +204,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(financial, index) in stock.yearlyFinancials.slice(0, 3)" :key="financial.year"
+                      <tr v-for="(financial, index) in stock.yearlyFinancials?.slice(0, 3) ?? []" :key="financial.year"
                           :class="`${index % 2 === 0 ? 'bg-slate-800/60' : 'bg-slate-800/30'}`">
                         <td class="sticky left-0 z-10 py-1.5 px-2 text-center font-medium text-slate-300" :class="index % 2 === 0 ? 'bg-slate-800/60' : 'bg-slate-800/30'">{{ financial.year }}</td>
                         <td class="py-1.5 px-2 text-center font-medium text-emerald-300">{{ financial.eps?.toFixed(2) || 'N/A' }}</td>
@@ -211,7 +212,7 @@
                         <td class="py-1.5 px-2 text-center font-medium text-blue-300">{{ financial.grossMargin?.toFixed(2) || 'N/A' }}%</td>
                         <td class="py-1.5 px-2 text-center font-medium text-purple-300">{{ financial.netProfitMargin?.toFixed(2) || 'N/A' }}%</td>
                       </tr>
-                      <tr v-if="stock.yearlyFinancials.length > 3" class="bg-slate-800/20 border-t border-slate-700">
+                      <tr v-if="(stock.yearlyFinancials?.length ?? 0) > 3" class="bg-slate-800/20 border-t border-slate-700">
                         <td colspan="5" class="text-center py-1 text-xs">
                           <button class="text-emerald-400 text-xs">查看更多...</button>
                         </td>
@@ -237,7 +238,7 @@
               </div>
               <div class="flex items-center justify-between">
                 <button
-                  @click="handleAnalyze(stock)"
+                  @click="$emit('analyze', stock)"
                   class="flex-1 flex items-center justify-center bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium py-2 rounded-l border border-slate-600"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -246,8 +247,8 @@
                   財報分析
                 </button>
                 <button
-                  @click="handleInfo(stock)"
-                  class="flex-1 flex items-center justify-center bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium py-2 rounded-r border border-slate-600 border-l-0"
+                  @click="$emit('info', stock)"
+                  class="flex-1 flex items-center justify-center bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium py-2 rounded-r border border-slate-600"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -262,13 +263,22 @@
         <!-- 分頁控制器 -->
         <div class="flex flex-col sm:flex-row justify-between items-center px-2 mt-4 sm:mt-6 gap-4 sm:gap-0">
           <div class="text-xs sm:text-sm text-slate-400 font-medium text-center sm:text-left w-full sm:w-auto">
-            顯示第 {{ startIndex + 1 }} 到 {{ Math.min(endIndex, stockData.length) }} 筆，共 {{ stockData.length }} 筆資料
+            顯示第 {{ currentPage }} 到 {{ Math.min(endIndex, stocks.length) }} 筆，共 {{ stocks.length }} 筆資料
+            <select 
+              v-model="localPageSize" 
+              @change="(e) => handlePageSizeChange(Number((e.target as HTMLSelectElement).value))"
+              class="ml-2 bg-slate-700 text-white rounded border-slate-600 px-2 py-1"
+            >
+              <option value="10">10筆/頁</option>
+              <option value="20">20筆/頁</option>
+              <option value="50">50筆/頁</option>
+            </select>
           </div>
           <div class="join rounded-lg shadow-sm overflow-hidden w-full sm:w-auto flex justify-center">
             <button 
               class="join-item btn btn-sm h-8 sm:h-10 min-w-[2.5rem] sm:min-w-[3rem] bg-gray-500 hover:bg-gray-600 text-white border-0" 
               :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
-              @click="currentPage = 1"
+              @click="handlePageChange(1)"
               :disabled="currentPage === 1"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -278,7 +288,7 @@
             <button 
               class="join-item btn btn-sm h-8 sm:h-10 min-w-[2.5rem] sm:min-w-[3rem] bg-gray-500 hover:bg-gray-600 text-white border-0" 
               :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
-              @click="currentPage--"
+              @click="handlePageChange(currentPage - 1)"
               :disabled="currentPage === 1"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -289,7 +299,7 @@
             <button 
               class="join-item btn btn-sm h-8 sm:h-10 min-w-[2.5rem] sm:min-w-[3rem] bg-gray-500 hover:bg-gray-600 text-white border-0" 
               :class="{ 'opacity-50 cursor-not-allowed': currentPage === totalPages }"
-              @click="currentPage++"
+              @click="handlePageChange(currentPage + 1)"
               :disabled="currentPage === totalPages"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -299,7 +309,7 @@
             <button 
               class="join-item btn btn-sm h-8 sm:h-10 min-w-[2.5rem] sm:min-w-[3rem] bg-gray-500 hover:bg-gray-600 text-white border-0" 
               :class="{ 'opacity-50 cursor-not-allowed': currentPage === totalPages }"
-              @click="currentPage = totalPages"
+              @click="handlePageChange(totalPages)"
               :disabled="currentPage === totalPages"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -315,52 +325,49 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import type { Stock } from '~/types/stock';
-import { useMockStocks } from '~/composables/useMockStocks';
+import type { Stock } from '@/types/stock';
 
 const props = defineProps<{
   stocks: Stock[];
   loading: boolean;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 }>();
-
-const { mockStocks, useMockData } = useMockStocks();
 
 const emit = defineEmits<{
   (e: 'analyze' | 'info', stock: Stock): void;
+  (e: 'page-change' | 'page-size-change', value: number): void;
 }>();
 
-// 使用環境變數控制是否使用模擬資料
-const stockData = computed(() => {
-  const result = useMockData ? mockStocks : props.stocks;
-  console.log('Final stocks to display:', result);
-  return result;
+// 分頁相關
+const localPageSize = ref(props.pageSize);
+
+const endIndex = computed(() => {
+  return props.currentPage * props.pageSize;
 });
 
-// 處理按鈕點擊事件
-const handleAnalyze = (stock: Stock) => {
-  console.log('Analyzing stock:', stock);
-  emit('analyze', stock);
+const handlePageChange = (page: number) => {
+  if (page >= 1 && page <= props.totalPages) {
+    emit('page-change', page);
+  }
 };
 
-const handleInfo = (stock: Stock) => {
-  emit('info', stock);
+const handlePageSizeChange = (size: number) => {
+  localPageSize.value = size;
+  emit('page-size-change', size);
 };
 
-// 分頁相關
-const currentPage = ref(1);
-const pageSize = 10; // 每頁顯示數量
-
-const totalPages = computed(() => Math.ceil(stockData.value.length / pageSize));
-const startIndex = computed(() => (currentPage.value - 1) * pageSize);
-const endIndex = computed(() => startIndex.value + pageSize);
-
-const paginatedStocks = computed(() => {
-  return stockData.value.slice(startIndex.value, endIndex.value);
+// 監聽 pageSize prop 的變化
+watch(() => props.pageSize, (newSize) => {
+  localPageSize.value = newSize;
 });
 
 // 監聽 stocks 變化，重置頁碼
-watch(() => stockData.value, () => {
-  currentPage.value = 1;
+watch(() => props.stocks, () => {
+  localPageSize.value = props.pageSize;
 });
 </script>
 
