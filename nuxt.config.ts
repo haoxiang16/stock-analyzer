@@ -27,7 +27,7 @@ export default defineNuxtConfig({
       useMockData: process.env.VITE_USE_MOCK_DATA,
       apiBaseUrl: process.env.NODE_ENV === 'development' 
         ? 'https://localhost:7208'
-        : 'http://stockapi-env.eba-zwbbuhjp.ap-southeast-1.elasticbeanstalk.com'
+        : 'https://stock-screener-ai.com/'
     }
   }
 })
