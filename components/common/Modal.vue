@@ -1,5 +1,5 @@
 <template>
-  <dialog :id="computedModalId" class="modal">
+  <dialog :id="computedModalId" ref="modalRef" class="modal">
     <div class="modal-box max-w-4xl bg-slate-900 rounded-xl shadow-xl border border-slate-700">
       <!-- 標題區域 -->
       <div class="flex items-center px-8 py-6 bg-slate-800 border-b border-slate-700 rounded-t-xl">
@@ -9,7 +9,7 @@
             {{ title }}
           </h3>
         </div>
-        <button class="btn btn-sm btn-circle absolute right-4 top-4 bg-slate-700 hover:bg-slate-600 border-0 text-white" @click="hide">
+        <button class="btn btn-sm btn-circle absolute right-4 top-4 bg-slate-700 hover:bg-slate-600 border-0 text-white" @click="closeModal">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -77,24 +77,23 @@ const renderedContent = computed(() => {
   }
 });
 
-// 顯示/隱藏模態框
-const show = () => {
-  const modal = document.getElementById(computedModalId.value) as HTMLDialogElement;
-  if (modal) {
-    modal.showModal();
+const modalRef = ref<HTMLDialogElement | null>(null);
+
+const showModal = () => {
+  if (modalRef.value) {
+    modalRef.value.showModal();
   }
 };
 
-const hide = () => {
-  const modal = document.getElementById(computedModalId.value) as HTMLDialogElement;
-  if (modal) {
-    modal.close();
+const closeModal = () => {
+  if (modalRef.value) {
+    modalRef.value.close();
   }
 };
 
 defineExpose({
-  show,
-  hide,
+  show: showModal,
+  hide: closeModal,
   id: computedModalId,
 });
 </script>
