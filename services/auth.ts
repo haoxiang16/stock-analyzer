@@ -78,8 +78,8 @@ export async function getToken(): Promise<string> {
   }
 
   // 從環境變數獲取帳號密碼
-  const username = import.meta.env.AUTH_USERNAME;
-  const password = import.meta.env.AUTH_PASSWORD;
+  const username = import.meta.env.VITE_AUTH_USERNAME;
+  const password = import.meta.env.VITE_AUTH_PASSWORD;
 
   return login(username, password);
 }
