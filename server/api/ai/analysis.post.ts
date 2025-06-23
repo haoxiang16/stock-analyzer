@@ -1,12 +1,15 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import type { Stock, YearlyFinancial } from "@/types/stock";
+import type { YearlyFinancial } from "@/types/stock";
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
+    console.log('Received request body:', JSON.stringify(body, null, 2));
+    
     const { stockInfo } = body;
 
     if (!stockInfo) {
+      console.error('Stock information is missing from request');
       throw createError({
         statusCode: 400,
         statusMessage: 'Stock information is required'
@@ -15,16 +18,20 @@ export default defineEventHandler(async (event) => {
 
     // 使用伺服器端環境變數（不會暴露給客戶端）
     const apiKey = process.env.GEMINI_API_KEY;
+    console.log('API Key available:', !!apiKey);
+    
     if (!apiKey) {
+      console.error('GEMINI_API_KEY environment variable is not set');
       throw createError({
         statusCode: 500,
         statusMessage: 'API key not configured'
       });
     }
 
+    console.log('Initializing Gemini AI...');
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-1.5-flash",
       generationConfig: {
         temperature: 0.1,
         topK: 16,
@@ -95,18 +102,31 @@ ${formatFinancialData(stockInfo.yearlyFinancials || [])}
 - 嚴格按照上述結構提供標準化分析內容
 - 不使用口語化或過於客氣的用語`;
 
+    console.log('Sending request to Gemini API...');
     const result = await model.generateContent(prompt);
     const response = await result.response;
+    const analysisText = response.text();
     
+    console.log('Successfully generated analysis');
     return {
-      analysis: response.text()
+      analysis: analysisText
     };
 
   } catch (error) {
     console.error("Gemini API 分析報告生成失敗:", error);
+    
+    // 提供更詳細的錯誤訊息
+    if (error instanceof Error) {
+      console.error("Error details:", error.message, error.stack);
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Failed to generate analysis: ${error.message}`
+      });
+    }
+    
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to generate analysis'
+      statusMessage: 'Failed to generate analysis - unknown error'
     });
   }
 }); 

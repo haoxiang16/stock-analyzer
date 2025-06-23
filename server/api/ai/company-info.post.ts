@@ -3,9 +3,12 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
+    console.log('Received company info request:', JSON.stringify(body, null, 2));
+    
     const { stockInfo } = body;
 
     if (!stockInfo) {
+      console.error('Stock information is missing from request');
       throw createError({
         statusCode: 400,
         statusMessage: 'Stock information is required'
@@ -13,16 +16,20 @@ export default defineEventHandler(async (event) => {
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
+    console.log('API Key available:', !!apiKey);
+    
     if (!apiKey) {
+      console.error('GEMINI_API_KEY environment variable is not set');
       throw createError({
         statusCode: 500,
         statusMessage: 'API key not configured'
       });
     }
 
+    console.log('Initializing Gemini AI for company info...');
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-1.5-flash",
       generationConfig: {
         temperature: 0.1,
         topK: 16,
@@ -66,18 +73,31 @@ export default defineEventHandler(async (event) => {
 - 嚴格按照結構提供標準化內容
 - 不使用口語化或過於客氣的用語`;
 
+    console.log('Sending company info request to Gemini API...');
     const result = await model.generateContent(prompt);
     const response = await result.response;
+    const infoText = response.text();
     
+    console.log('Successfully generated company info');
     return {
-      info: response.text()
+      info: infoText
     };
 
   } catch (error) {
     console.error("Gemini API 公司資訊生成失敗:", error);
+    
+    // 提供更詳細的錯誤訊息
+    if (error instanceof Error) {
+      console.error("Error details:", error.message, error.stack);
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Failed to generate company info: ${error.message}`
+      });
+    }
+    
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to generate company info'
+      statusMessage: 'Failed to generate company info - unknown error'
     });
   }
 }); 
